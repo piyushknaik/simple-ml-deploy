@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 import uvicorn
 import logging
 from app.model import MLModel
+from contextlib import asynccontextmanager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -33,8 +34,8 @@ class HealthResponse(BaseModel):
     status: str = Field(..., example="healthy")
     model_loaded: bool = Field(..., example=True)
 
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan():
     """Load the ML model when the API starts."""
     logger.info("Loading ML model on startup")
     model.load_model()

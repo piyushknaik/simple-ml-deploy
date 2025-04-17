@@ -32,7 +32,7 @@ def test_predict_endpoint_invalid_data():
     """Test the prediction endpoint with invalid data."""
     # Invalid input - string instead of float
     response = client.post("/predict", json={"features": ["invalid", 3.5, 1.4, 0.2]})
-    assert response.status_code == 500
+    assert response.status_code == 422
 
     # Invalid input - missing features
     response = client.post("/predict", json={})
