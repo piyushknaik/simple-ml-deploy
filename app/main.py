@@ -37,7 +37,7 @@ def index(request: Request) -> Any:
     return HTMLResponse(content=body)
 
 
-app.include_router(api_router, prefix=settings.API_V1_STR)
+# app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(root_router)
 
 # Set all CORS enabled origins
