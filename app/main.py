@@ -17,6 +17,7 @@ app = FastAPI(
 )
 
 root_router = APIRouter()
+api_router = APIRouter()
 
 
 @root_router.get("/")
