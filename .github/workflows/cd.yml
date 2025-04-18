@@ -15,12 +15,12 @@ jobs:
       - name: Pull Docker Image
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
-        run: sudo docker pull $DOCKER_USER/ml-model-fastapi:latest
+        run: sudo docker pull $DOCKER_USER/ml-model-api:latest
     
       - name: Delete Old Docker Container
-        run: sudo docker rm -f ml-model-fastapi-container || true
+        run: sudo docker rm -f ml-model-api-container || true
     
       - name: Run Docker Container
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
-        run: sudo docker run -it -d -p 8001:8001 --name ml-model-fastapi-container $DOCKER_USER/ml-model-fastapi:latest
+        run: sudo docker run -it -d -p 8001:8001 --name ml-model-api-container $DOCKER_USER/ml-model-api:latest
