@@ -5,6 +5,10 @@ import uvicorn
 import logging
 from app.model import MLModel
 from contextlib import asynccontextmanager
+from app import __version__, schemas
+from app.config import settings
+
+api_router = APIRouter()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -40,7 +44,7 @@ async def lifespan():
     logger.info("Loading ML model on startup")
     model.load_model()
 
-@app.get("/health", response_model=HealthResponse)
+@api_router.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint."""
     model_loaded = model.model is not None
@@ -53,7 +57,7 @@ async def health_check():
         "model_loaded": model_loaded
     }
 
-@app.post("/predict", response_model=Dict[str, Any])
+@api_router.post("/predict", response_model=Dict[str, Any])
 async def predict(request: PredictionRequest):
     """Make a prediction using the ML model."""
     try:
@@ -65,6 +69,6 @@ async def predict(request: PredictionRequest):
         logger.error(f"Error making prediction: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# For local development
-if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+# # For local development
+# if __name__ == "__main__":
+#     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

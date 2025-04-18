@@ -9,7 +9,7 @@ from typing import Any
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-
+from app.api import api_router
 from app.config import settings
 
 app = FastAPI(
@@ -17,7 +17,6 @@ app = FastAPI(
 )
 
 root_router = APIRouter()
-api_router = APIRouter()
 
 
 @root_router.get("/")
@@ -37,7 +36,7 @@ def index(request: Request) -> Any:
     return HTMLResponse(content=body)
 
 
-# app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(root_router)
 
 # Set all CORS enabled origins
@@ -54,6 +53,7 @@ if settings.BACKEND_CORS_ORIGINS:
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001) 
+    # uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
 
     ## localhost--> 127.0.0.0
     ## host --> 0.0.0.0 allows all host
