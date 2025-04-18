@@ -5,7 +5,6 @@ import uvicorn
 import logging
 from app.model import MLModel
 from contextlib import asynccontextmanager
-from app import __version__, schemas
 from app.config import settings
 
 api_router = APIRouter()
