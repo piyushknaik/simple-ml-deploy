@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -48,3 +48,30 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/ml-model-api:latest
+
+deploy:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/ml-model-api:latest
+            
+            # Stop and remove the old container if exists
+            docker stop ml-model-api || true
+            docker rm ml-model-api || true
+            
+            # Run the new container
+            docker run -d --name ml-model-api \
+              -p 8000:8000 \
+              ${{ secrets.DOCKER_HUB_USERNAME }}/ml-model-api:latest
+            
+            # Clean up unused images
+            docker image prune -f
