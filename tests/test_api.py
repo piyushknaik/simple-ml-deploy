@@ -8,7 +8,7 @@ client = TestClient(app)
 
 def test_health_endpoint():
     """Test the health check endpoint."""
-    response = client.get("/health")
+    response = client.get("/api/v1/health")
     assert response.status_code == 200
     data = response.json()
     assert "status" in data
@@ -19,7 +19,7 @@ def test_predict_endpoint():
     # Sample iris flower features (sepal length, sepal width, petal length, petal width)
     features = [5.1, 3.5, 1.4, 0.2]  # This is a Setosa
     
-    response = client.post("/predict", json={"features": features})
+    response = client.post("/api/v1/predict", json={"features": features})
     assert response.status_code == 200
     data = response.json()
     assert "prediction" in data
@@ -31,11 +31,11 @@ def test_predict_endpoint():
 def test_predict_endpoint_invalid_data():
     """Test the prediction endpoint with invalid data."""
     # Invalid input - string instead of float
-    response = client.post("/predict", json={"features": ["invalid", 3.5, 1.4, 0.2]})
+    response = client.post("/api/v1/predict", json={"features": ["invalid", 3.5, 1.4, 0.2]})
     assert response.status_code == 422
 
     # Invalid input - missing features
-    response = client.post("/predict", json={})
+    response = client.post("/api/v1/predict", json={})
     assert response.status_code == 422
 
 def test_model_class():
